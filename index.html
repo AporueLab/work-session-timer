@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071014">
+  <title>Work Session Timer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="timer-card" aria-labelledby="app-title">
+    <time id="clock" class="clock" aria-label="Current time">--:--</time>
+
+    <section id="setup-view" class="view">
+      <p id="app-title" class="eyebrow">WORK SESSION</p>
+
+      <div class="settings" aria-label="Session settings">
+        <label class="setting">
+          <span>PERIODS</span>
+          <input id="parts-input" type="number" min="1" max="12" step="1" value="2" inputmode="numeric">
+        </label>
+
+        <label class="setting">
+          <span>WORK MINUTES</span>
+          <input id="work-input" type="number" min="1" max="180" step="1" value="30" inputmode="numeric">
+        </label>
+
+        <label class="setting">
+          <span>BREAK MINUTES</span>
+          <input id="break-input" type="number" min="1" max="60" step="1" value="10" inputmode="numeric">
+        </label>
+      </div>
+
+      <p id="session-summary" class="session-summary" aria-live="polite"></p>
+      <button id="start-button" class="button button-primary" type="button">Start session</button>
+    </section>
+
+    <section id="timer-view" class="view" hidden>
+      <p id="phase-label" class="eyebrow">WORK PERIOD 1 OF 2</p>
+      <div id="countdown" class="countdown" role="timer" aria-live="off">30:00</div>
+      <p id="progress-label" class="progress-label">Session in progress</p>
+
+      <div id="running-controls" class="controls">
+        <button id="pause-button" class="button button-primary" type="button">Pause</button>
+        <button id="restart-button" class="button" type="button">Restart</button>
+        <button id="skip-button" class="button" type="button">Skip</button>
+        <button id="stop-button" class="button button-danger" type="button">Stop</button>
+      </div>
+
+      <div id="continue-controls" class="controls" hidden>
+        <button id="continue-button" class="button button-primary" type="button">Continue</button>
+        <button id="stop-waiting-button" class="button button-danger" type="button">Stop session</button>
+      </div>
+    </section>
+
+    <section id="complete-view" class="view" hidden>
+      <p class="eyebrow">SESSION COMPLETE</p>
+      <div class="completion-mark" aria-hidden="true">✓</div>
+      <p class="completion-text">Work finished.</p>
+      <button id="new-session-button" class="button button-primary" type="button">New session</button>
+    </section>
+  </main>
+
+  <audio id="alarm" src="sound.mp3" preload="auto"></audio>
+  <script src="app.js"></script>
+</body>
+</html>
