@@ -64,7 +64,7 @@
     const settings = readSettings();
     const totalMinutes = (settings.parts * settings.workMinutes) +
       ((settings.parts - 1) * settings.breakMinutes);
-    const mode = settings.automaticAdvance ? " · automatic" : "";
+    const mode = settings.automaticAdvance ? " · auto advance" : "";
     elements.summary.textContent = `${plural(settings.parts, "period")} · ${formatDuration(totalMinutes)}${mode}`;
   }
 
@@ -410,7 +410,7 @@
       window.location.reload();
     });
 
-    navigator.serviceWorker.register("./sw.js?v=5", { updateViaCache: "none" })
+    navigator.serviceWorker.register("./sw.js?v=6", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   }

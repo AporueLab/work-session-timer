@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <main class="timer-card" aria-labelledby="app-title">
@@ -32,14 +32,15 @@
         </label>
       </div>
 
-      <label class="auto-advance">
-        <input id="auto-advance-input" type="checkbox" role="switch">
-        <span class="switch-track" aria-hidden="true"></span>
-        <span>Automatic advance</span>
-      </label>
-
       <p id="session-summary" class="session-summary" aria-live="polite"></p>
-      <button id="start-button" class="button button-primary" type="button">Start session</button>
+      <div class="setup-actions">
+        <button id="start-button" class="button button-primary" type="button">Start session</button>
+        <label class="auto-advance">
+          <input id="auto-advance-input" type="checkbox" role="switch">
+          <span class="switch-track" aria-hidden="true"></span>
+          <span>Auto Advance</span>
+        </label>
+      </div>
     </section>
 
     <section id="timer-view" class="view" hidden>
@@ -69,6 +70,6 @@
   </main>
 
   <audio id="alarm" src="sound.mp3" preload="auto"></audio>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

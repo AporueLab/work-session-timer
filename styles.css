@@ -118,11 +118,19 @@ input {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: 0 auto 14px;
+  margin: 0;
   color: var(--muted);
   cursor: pointer;
   font-size: 14px;
   line-height: 1.4;
+}
+
+.setup-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  white-space: nowrap;
 }
 
 .auto-advance input {
@@ -325,23 +333,41 @@ input {
     font-size: 15px;
   }
 
+  .setup-actions {
+    gap: 10px;
+  }
+
+  .setup-actions .button {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
   .completion-mark {
     margin-bottom: 8px;
     font-size: 60px;
   }
 }
 
-@media (max-height: 330px) and (max-width: 440px) {
+@media (max-height: 420px) {
+  body {
+    min-height: 100vh;
+    padding: 8px;
+  }
+
   .timer-card {
-    justify-content: flex-start;
-    padding-block: 12px;
+    min-height: 0;
+    padding-block: 10px;
   }
 
   .eyebrow,
   .session-summary,
   .progress-label,
   .completion-text {
-    margin-bottom: 9px;
+    margin-bottom: 8px;
+  }
+
+  .settings {
+    margin-bottom: 8px;
   }
 }
 
