@@ -35,18 +35,10 @@
     remainingMs: 0,
     deadline: 0,
     intervalId: null,
-    audioContext: null
+    audioContext: null,
+    alarmBuffer: null,
+    alarmLoadPromise: null
   };
-
-  function updateViewportMode() {
-    const outerWidth = window.outerWidth || window.innerWidth;
-    const outerHeight = window.outerHeight || window.innerHeight;
-    const zoomCompensation = Math.min(2, Math.max(1, window.innerWidth / outerWidth));
-    const isCompactWindow = outerWidth <= 900 || outerHeight <= 700;
-
-    document.documentElement.classList.toggle("compact-window", isCompactWindow);
-    document.documentElement.style.setProperty("--zoom-compensation", zoomCompensation.toFixed(2));
-  }
 
   function updateClock() {
     elements.clock.textContent = new Intl.DateTimeFormat([], {
@@ -272,27 +264,78 @@
 
   function unlockAudio() {
     elements.alarm.load();
+
     if (!state.audioContext) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (AudioContext) state.audioContext = new AudioContext();
     }
+
     if (state.audioContext?.state === "suspended") {
       state.audioContext.resume().catch(() => {});
+    }
+
+    if (state.audioContext) {
+      const silentSource = state.audioContext.createBufferSource();
+      silentSource.buffer = state.audioContext.createBuffer(1, 1, state.audioContext.sampleRate);
+      silentSource.connect(state.audioContext.destination);
+      silentSource.start();
+    }
+
+    if (state.audioContext && !state.alarmLoadPromise) {
+      const alarmUrl = new URL(elements.alarm.getAttribute("src"), document.baseURI);
+      state.alarmLoadPromise = fetch(alarmUrl, { cache: "reload" })
+        .then((response) => {
+          if (!response.ok) throw new Error(`Alarm request failed: ${response.status}`);
+          return response.arrayBuffer();
+        })
+        .then((audioData) => state.audioContext.decodeAudioData(audioData))
+        .then((buffer) => {
+          state.alarmBuffer = buffer;
+          return buffer;
+        })
+        .catch(() => null);
     }
   }
 
   async function playAlarm() {
+    const context = state.audioContext;
+
+    if (context) {
+      if (context.state === "suspended") {
+        await context.resume().catch(() => {});
+      }
+
+      if (state.alarmLoadPromise) {
+        await state.alarmLoadPromise;
+      }
+
+      if (state.alarmBuffer && context.state === "running") {
+        const source = context.createBufferSource();
+        source.buffer = state.alarmBuffer;
+        source.connect(context.destination);
+        source.start();
+        return;
+      }
+    }
+
     try {
       elements.alarm.currentTime = 0;
       await elements.alarm.play();
     } catch {
-      playFallbackTone();
+      await playFallbackTone();
     }
   }
 
-  function playFallbackTone() {
+  async function playFallbackTone() {
     const context = state.audioContext;
     if (!context) return;
+
+    if (context.state === "suspended") {
+      await context.resume().catch(() => {});
+    }
+
+    if (context.state !== "running") return;
+
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = "sine";
@@ -321,10 +364,11 @@
     if (!document.hidden && state.status === "running") tick();
   });
 
-  window.addEventListener("resize", updateViewportMode);
-
-  updateViewportMode();
   updateClock();
   updateSummary();
   window.setInterval(updateClock, 1000);
+
+  if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  }
 })();
