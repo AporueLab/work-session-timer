@@ -1,4 +1,4 @@
-const CACHE_NAME = "work-session-timer-v2";
+const CACHE_NAME = "work-session-timer-v3";
 const APP_SHELL = [
   "./",
   "./index.html",

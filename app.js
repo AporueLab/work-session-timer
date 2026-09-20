@@ -37,7 +37,8 @@
     intervalId: null,
     audioContext: null,
     alarmBuffer: null,
-    alarmLoadPromise: null
+    alarmLoadPromise: null,
+    alarmPrimingPromise: null
   };
 
   function updateClock() {
@@ -265,6 +266,28 @@
   function unlockAudio() {
     elements.alarm.load();
 
+    if (!state.alarmPrimingPromise) {
+      const originalVolume = elements.alarm.volume;
+      elements.alarm.volume = 0;
+      elements.alarm.currentTime = 0;
+
+      state.alarmPrimingPromise = elements.alarm.play()
+        .then(() => new Promise((resolve) => window.setTimeout(resolve, 100)))
+        .then(() => {
+          elements.alarm.pause();
+          elements.alarm.currentTime = 0;
+          elements.alarm.volume = originalVolume;
+          return true;
+        })
+        .catch(() => {
+          elements.alarm.pause();
+          elements.alarm.currentTime = 0;
+          elements.alarm.volume = originalVolume;
+          state.alarmPrimingPromise = null;
+          return false;
+        });
+    }
+
     if (!state.audioContext) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (AudioContext) state.audioContext = new AudioContext();
@@ -298,6 +321,18 @@
   }
 
   async function playAlarm() {
+    if (state.alarmPrimingPromise) {
+      await state.alarmPrimingPromise;
+    }
+
+    try {
+      elements.alarm.currentTime = 0;
+      await elements.alarm.play();
+      return;
+    } catch {
+      // Try the decoded Web Audio copy before using the generated fallback tone.
+    }
+
     const context = state.audioContext;
 
     if (context) {
@@ -318,12 +353,7 @@
       }
     }
 
-    try {
-      elements.alarm.currentTime = 0;
-      await elements.alarm.play();
-    } catch {
-      await playFallbackTone();
-    }
+    await playFallbackTone();
   }
 
   async function playFallbackTone() {
