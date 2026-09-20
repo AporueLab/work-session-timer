@@ -4,14 +4,13 @@
   --panel: #0c171f;
   --panel-deep: #081116;
   --text: #f2f5f6;
-  --muted: #82949d;
+  --muted: #91a1a8;
   --cyan: #00d9ff;
   --cyan-soft: rgba(0, 217, 255, 0.17);
   --border: #263b3e;
   --danger: #db7881;
   --break: #7ee0b8;
   --radius: 10px;
-  --zoom-compensation: 1;
 }
 
 * {
@@ -20,8 +19,8 @@
 
 html,
 body {
-  min-height: 100%;
   min-width: 0;
+  min-height: 100%;
 }
 
 body {
@@ -29,7 +28,8 @@ body {
   margin: 0;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 18px;
+  overflow-x: hidden;
   background: var(--page);
   color: var(--text);
   font-family: "Courier New", Courier, monospace;
@@ -37,31 +37,22 @@ body {
 
 button,
 input {
+  min-width: 0;
   font: inherit;
 }
 
 .timer-card {
-  min-width: 0;
   width: min(620px, 100%);
-  min-height: clamp(280px, 52vh, 360px);
+  min-width: 0;
+  min-height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(18px, 5vmin, 42px) clamp(18px, 7vmin, 56px) clamp(20px, 5.5vmin, 46px);
+  padding: 36px 46px 40px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.38), 0 0 22px rgba(76, 152, 135, 0.08);
-}
-
-.clock {
-  display: block;
-  margin-bottom: clamp(12px, 4vh, 28px);
-  text-align: center;
-  color: var(--text);
-  font-size: 18px;
-  letter-spacing: 0.24em;
-  font-variant-numeric: tabular-nums;
 }
 
 .view {
@@ -74,37 +65,36 @@ input {
 }
 
 .eyebrow {
-  margin: 0 0 clamp(14px, 4vh, 27px);
+  margin: 0 0 21px;
   color: var(--cyan);
-  font-size: clamp(14px, 3vw, 17px);
-  letter-spacing: 0.2em;
-  line-height: 1.5;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
   text-transform: uppercase;
 }
 
 .settings {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(7px, 2vw, 12px);
-  margin-bottom: clamp(12px, 3vh, 20px);
+  gap: 11px;
+  margin-bottom: 17px;
 }
 
 .setting {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
   color: var(--muted);
-  font-size: 15px;
-  letter-spacing: 0.11em;
-  line-height: 1.45;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
 }
 
 .setting input {
-  min-width: 0;
   width: 100%;
-  height: 47px;
-  padding: 0 8px;
+  height: 44px;
+  padding: 0 7px;
   border: 1px solid var(--border);
   border-radius: 5px;
   outline: none;
@@ -121,22 +111,82 @@ input {
   box-shadow: 0 0 0 2px var(--cyan-soft);
 }
 
+.auto-advance {
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 14px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.auto-advance input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.switch-track {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel-deep);
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.switch-track::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  content: "";
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.auto-advance input:checked + .switch-track {
+  border-color: var(--cyan);
+  background: var(--cyan-soft);
+}
+
+.auto-advance input:checked + .switch-track::after {
+  background: var(--cyan);
+  transform: translateX(18px);
+}
+
+.auto-advance input:focus-visible + .switch-track {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
 .session-summary,
 .progress-label,
 .completion-text {
-  min-height: 20px;
-  margin: 0 0 clamp(12px, 3vh, 22px);
+  min-height: 21px;
+  margin: 0 0 17px;
   color: var(--muted);
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .countdown {
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   color: var(--text);
-  font-size: clamp(46px, min(13vw, 18vh), 82px);
+  font-size: clamp(58px, 13vw, 82px);
   font-weight: 400;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -153,19 +203,19 @@ input {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .button {
   min-height: 38px;
-  padding: 7px 15px;
+  padding: 7px 14px;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--panel-deep);
   color: var(--cyan);
   cursor: pointer;
   font-size: 15px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   transition: border-color 150ms ease, background 150ms ease, transform 80ms ease;
 }
 
@@ -198,71 +248,80 @@ input {
 }
 
 .completion-mark {
-  margin: -3px 0 13px;
+  margin: -3px 0 11px;
   color: var(--cyan);
   font-family: system-ui, sans-serif;
-  font-size: 76px;
+  font-size: 70px;
   font-weight: 200;
   line-height: 1;
 }
 
-@media (max-width: 760px), (max-height: 620px) {
+/* Installed Edge app: a readable layout down to a genuinely narrow window. */
+@media (max-width: 440px) {
   body {
-    padding: 6px;
+    display: block;
+    padding: 0;
+    background: var(--panel);
   }
 
   .timer-card {
     width: 100%;
-    max-width: none;
-    min-height: 0;
-    padding: 16px 18px 18px;
-  }
-
-  .clock {
-    margin-bottom: 12px;
-    font-size: 16px;
+    min-height: 100vh;
+    padding: 16px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .eyebrow {
-    margin-bottom: 14px;
-    font-size: 17px;
+    margin-bottom: 13px;
+    font-size: 16px;
+    letter-spacing: 0.12em;
   }
 
   .settings {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 7px;
+    margin-bottom: 12px;
   }
 
   .setting {
-    display: flex;
-    text-align: center;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-  }
-
-  .setting span {
-    min-height: 18px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    font-size: 14px;
   }
 
   .setting input {
-    height: 42px;
+    height: 38px;
     font-size: 18px;
   }
 
+  .session-summary,
+  .progress-label,
+  .completion-text {
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+
   .countdown {
+    margin-bottom: 12px;
+    font-size: clamp(54px, 19vw, 70px);
     letter-spacing: 0.04em;
   }
 
   .controls {
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
   }
 
   .button {
+    width: 100%;
     min-height: 38px;
-    padding: 7px 11px;
+    padding: 7px 9px;
     font-size: 15px;
   }
 
@@ -272,77 +331,17 @@ input {
   }
 }
 
-/*
-  Desktop browsers report a much larger CSS viewport when the page is zoomed
-  out. JavaScript adds this class from the physical Edge window dimensions so
-  the compact layout still activates and fixed-size text remains readable.
-*/
-html.compact-window body {
-  padding: 6px;
-}
-
-html.compact-window .timer-card {
-  width: 100%;
-  max-width: none;
-  min-height: 0;
-  padding: 14px 18px 16px;
-}
-
-html.compact-window .clock {
-  margin-bottom: 10px;
-  font-size: calc(16px * var(--zoom-compensation));
-}
-
-html.compact-window .eyebrow {
-  margin-bottom: 12px;
-  font-size: calc(17px * var(--zoom-compensation));
-}
-
-html.compact-window .settings {
-  gap: 7px;
-  margin-bottom: 10px;
-}
-
-html.compact-window .setting {
-  gap: 6px;
-  font-size: calc(12px * var(--zoom-compensation));
-  letter-spacing: 0.06em;
-}
-
-html.compact-window .setting span {
-  min-height: auto;
-}
-
-html.compact-window .setting input {
-  height: calc(42px * var(--zoom-compensation));
-  font-size: calc(18px * var(--zoom-compensation));
-}
-
-html.compact-window .session-summary,
-html.compact-window .progress-label,
-html.compact-window .completion-text {
-  margin-bottom: 10px;
-  font-size: calc(15px * var(--zoom-compensation));
-}
-
-html.compact-window .controls {
-  gap: 6px;
-}
-
-html.compact-window .button {
-  min-height: calc(38px * var(--zoom-compensation));
-  padding: 6px calc(11px * var(--zoom-compensation));
-  font-size: calc(15px * var(--zoom-compensation));
-}
-
-@media (max-width: 330px) {
+@media (max-height: 330px) and (max-width: 440px) {
   .timer-card {
-    padding-inline: 12px;
+    justify-content: flex-start;
+    padding-block: 12px;
   }
 
-  .controls {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .eyebrow,
+  .session-summary,
+  .progress-label,
+  .completion-text {
+    margin-bottom: 9px;
   }
 }
 

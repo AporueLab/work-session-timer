@@ -3,13 +3,13 @@
 
   const elements = {
     card: document.querySelector(".timer-card"),
-    clock: document.querySelector("#clock"),
     setupView: document.querySelector("#setup-view"),
     timerView: document.querySelector("#timer-view"),
     completeView: document.querySelector("#complete-view"),
     partsInput: document.querySelector("#parts-input"),
     workInput: document.querySelector("#work-input"),
     breakInput: document.querySelector("#break-input"),
+    autoAdvanceInput: document.querySelector("#auto-advance-input"),
     summary: document.querySelector("#session-summary"),
     start: document.querySelector("#start-button"),
     phaseLabel: document.querySelector("#phase-label"),
@@ -41,14 +41,6 @@
     alarmPrimingPromise: null
   };
 
-  function updateClock() {
-    elements.clock.textContent = new Intl.DateTimeFormat([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).format(new Date());
-  }
-
   function boundedNumber(input, minimum, maximum, fallback) {
     const value = Number(input.value);
     if (!Number.isFinite(value)) return fallback;
@@ -59,7 +51,8 @@
     return {
       parts: Math.round(boundedNumber(elements.partsInput, 1, 12, 2)),
       workMinutes: boundedNumber(elements.workInput, 0.01, 180, 30),
-      breakMinutes: boundedNumber(elements.breakInput, 0.01, 60, 10)
+      breakMinutes: boundedNumber(elements.breakInput, 0.01, 60, 10),
+      automaticAdvance: elements.autoAdvanceInput.checked
     };
   }
 
@@ -71,7 +64,8 @@
     const settings = readSettings();
     const totalMinutes = (settings.parts * settings.workMinutes) +
       ((settings.parts - 1) * settings.breakMinutes);
-    elements.summary.textContent = `${plural(settings.parts, "period")} · ${formatDuration(totalMinutes)}`;
+    const mode = settings.automaticAdvance ? " · automatic" : "";
+    elements.summary.textContent = `${plural(settings.parts, "period")} · ${formatDuration(totalMinutes)}${mode}`;
   }
 
   function formatDuration(totalMinutes) {
@@ -193,6 +187,17 @@
     playAlarm();
 
     const isLastPhase = state.phaseIndex === state.phases.length - 1;
+
+    if (state.settings.automaticAdvance) {
+      if (isLastPhase) {
+        completeSession();
+      } else {
+        state.phaseIndex += 1;
+        beginCurrentPhase();
+      }
+      return;
+    }
+
     elements.runningControls.hidden = true;
     elements.continueControls.hidden = false;
     elements.continueButton.textContent = isLastPhase ? "Finish session" : "Continue";
@@ -378,8 +383,9 @@
     oscillator.stop(context.currentTime + 0.7);
   }
 
-  [elements.partsInput, elements.workInput, elements.breakInput].forEach((input) => {
+  [elements.partsInput, elements.workInput, elements.breakInput, elements.autoAdvanceInput].forEach((input) => {
     input.addEventListener("input", updateSummary);
+    input.addEventListener("change", updateSummary);
   });
   elements.start.addEventListener("click", startSession);
   elements.pause.addEventListener("click", togglePause);
@@ -394,9 +400,7 @@
     if (!document.hidden && state.status === "running") tick();
   });
 
-  updateClock();
   updateSummary();
-  window.setInterval(updateClock, 1000);
 
   if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
