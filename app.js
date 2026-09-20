@@ -403,6 +403,15 @@
   updateSummary();
 
   if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    navigator.serviceWorker.register("./sw.js?v=5", { updateViaCache: "none" })
+      .then((registration) => registration.update())
+      .catch(() => {});
   }
 })();
