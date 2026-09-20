@@ -410,7 +410,7 @@
       window.location.reload();
     });
 
-    navigator.serviceWorker.register("./sw.js?v=6", { updateViaCache: "none" })
+    navigator.serviceWorker.register("./sw.js?v=7", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   }

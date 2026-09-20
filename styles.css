@@ -9,7 +9,7 @@
   --cyan-soft: rgba(0, 217, 255, 0.17);
   --border: #263b3e;
   --danger: #db7881;
-  --break: #7ee0b8;
+  --break: #ff9f43;
   --radius: 10px;
 }
 
@@ -204,7 +204,8 @@ input {
 }
 
 .timer-card.break-mode .countdown {
-  text-shadow: 0 0 26px rgba(126, 224, 184, 0.11);
+  color: var(--break);
+  text-shadow: 0 0 26px rgba(255, 159, 67, 0.14);
 }
 
 .controls {
