@@ -317,7 +317,7 @@ input {
 
   .countdown {
     margin-bottom: 12px;
-    font-size: clamp(54px, 19vw, 70px);
+    font-size: clamp(48px, 17vw, 62px);
     letter-spacing: 0.04em;
   }
 
