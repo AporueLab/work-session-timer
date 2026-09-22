@@ -1,9 +1,9 @@
-const CACHE_NAME = "work-session-timer-v7";
+const CACHE_NAME = "work-session-timer-v8";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=7",
-  "./app.js?v=7",
+  "./styles.css?v=8",
+  "./app.js?v=8",
   "./sound.mp3",
   "./manifest.webmanifest",
   "./icon.svg",

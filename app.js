@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  document.title = "Work Session Timer";
+
   const elements = {
     card: document.querySelector(".timer-card"),
     setupView: document.querySelector("#setup-view"),
@@ -154,9 +156,6 @@
   function renderRemaining() {
     const formatted = formatTime(state.remainingMs);
     elements.countdown.textContent = formatted;
-    document.title = state.status === "setup"
-      ? "Work Session Timer"
-      : `${formatted} · ${currentPhase()?.type === "break" ? "Break" : "Work"}`;
   }
 
   function startTicking() {
@@ -252,7 +251,6 @@
     state.status = "complete";
     elements.card.classList.remove("break-mode");
     showOnly(elements.completeView);
-    document.title = "Session complete · Work Timer";
     elements.newSession.focus();
   }
 
@@ -263,7 +261,6 @@
     state.phaseIndex = 0;
     elements.card.classList.remove("break-mode");
     showOnly(elements.setupView);
-    document.title = "Work Session Timer";
     updateSummary();
     elements.start.focus();
   }
@@ -410,7 +407,7 @@
       window.location.reload();
     });
 
-    navigator.serviceWorker.register("./sw.js?v=7", { updateViaCache: "none" })
+    navigator.serviceWorker.register("./sw.js?v=8", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   }
