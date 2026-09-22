@@ -192,7 +192,7 @@ input {
 .countdown {
   margin: 0 0 14px;
   color: var(--text);
-  font-size: clamp(58px, 13vw, 82px);
+  font-size: clamp(52px, 11vw, 72px);
   font-weight: 400;
   letter-spacing: 0.07em;
   line-height: 1;
