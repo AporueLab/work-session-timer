@@ -407,7 +407,7 @@
       window.location.reload();
     });
 
-    navigator.serviceWorker.register("./sw.js?v=8", { updateViaCache: "none" })
+    navigator.serviceWorker.register("./sw.js?v=11", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   }
